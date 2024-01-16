@@ -32,7 +32,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
             case 0:
                 return new Control();
             case 1:
-                return new Control();
+                return new ManualControl();
         }
         return new Control();
     }

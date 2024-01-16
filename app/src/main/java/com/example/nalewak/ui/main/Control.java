@@ -14,6 +14,7 @@ import android.util.Log;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.JsonObject;
 
@@ -75,7 +76,7 @@ public class Control extends Fragment {
             jsonRequest.addProperty("Liquid_1", liquid_1);
             jsonRequest.addProperty("Liquid_2", liquid_2);
             requests.add(jsonRequest.toString());
-            Log.d("Control_fragment", jsonRequest.toString());
+            Log.d("Control", jsonRequest.toString());
 
             while (Objects.equals(requestCallback, "")) {
                 try {
@@ -86,24 +87,37 @@ public class Control extends Fragment {
             }
             Log.d("Control", requestCallback);
             JsonObject jsonObject = JsonParser.parseString(requestCallback).getAsJsonObject();
-            String name = jsonObject.get("Action").getAsString();
+            String action = jsonObject.get("Action").getAsString();
 
-            switch (name) {
+            switch (action) {
                 case "START_AUTO_PROGRAM_SUCCESS":
                     double time_1 = jsonObject.get("Time_1").getAsDouble();
-                    new CountdownTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (long)1, (long) (time_1*1000));
-                    PROGRESSBAR_LIQUID1.setMax((int)time_1*1000);
-                    Log.d("Control", String.valueOf(time_1));
-
                     double time_2 = jsonObject.get("Time_2").getAsDouble();
-                    new CountdownTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (long)2, (long) (time_2*1000));
-                    PROGRESSBAR_LIQUID2.setMax((int)time_2*1000);
-                    Log.d("Control", String.valueOf(time_2));
 
+                    new CountdownTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (long) 1, (long) (time_1 * 1000));
+                    new CountdownTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (long) 2, (long) (time_2 * 1000));
+
+                    PROGRESSBAR_LIQUID1.setMax((int) time_1 * 1000);
+                    PROGRESSBAR_LIQUID2.setMax((int) time_2 * 1000);
+
+                    Toast.makeText(this.getContext(), "Be patient, you're drink is being prepared.", Toast.LENGTH_LONG).show();
+
+                    Log.d("Control", action + " " + time_1 + " " + time_2);
                     break;
                 case "START_AUTO_PROGRAM_FAILURE":
-                    // TODO: On start failure handle
+                    String message = jsonObject.get("Message").getAsString();
+                    switch (message) {
+                        case "GLASS_NOT_DETECTED":
+                            Toast.makeText(this.getContext(), "Glass has not been detected", Toast.LENGTH_LONG).show();
+                            break;
+                        case "PROGRAM_RUNNING":
+                            Toast.makeText(this.getContext(), "Another program is running", Toast.LENGTH_LONG).show();
+                            break;
+                    }
+                    Log.d("Control", action + " " + message);
                     break;
+                default:
+
             }
             requestCallback = "";
         });
@@ -159,6 +173,10 @@ public class Control extends Fragment {
      */
     private class CountdownTask extends AsyncTask<Long, Long, Void> {
 
+        /**
+         * Countdown duration increment value differs from Thread.sleep due to inaccuracy in count.
+         * Average of measures was taken to define 65ms as most accurate value for iteration.
+         */
         @Override
         protected Void doInBackground(Long... params) {
             long countdownDuration = 0;
@@ -173,7 +191,8 @@ public class Control extends Fragment {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                countdownDuration += 50;
+
+                countdownDuration += 65;
             }
 
             return null;
@@ -186,11 +205,11 @@ public class Control extends Fragment {
             int progressBar = values[1].intValue();
             switch (progressBar) {
                 case 1:
-                    PROGRESSBAR_LIQUID1.setProgress((int)secondsRemaining);
+                    PROGRESSBAR_LIQUID1.setProgress((int) secondsRemaining);
                     Log.d("Async#1", String.valueOf(secondsRemaining));
                     break;
                 case 2:
-                    PROGRESSBAR_LIQUID2.setProgress((int)secondsRemaining);
+                    PROGRESSBAR_LIQUID2.setProgress((int) secondsRemaining);
                     Log.d("Async#2", String.valueOf(secondsRemaining));
                     break;
             }
