@@ -36,27 +36,67 @@
                 android:layout_marginEnd="15dp"
                 android:layout_toEndOf="@+id/buttonStartMotor1"
                 android:text="Kill motor#1" />
+
+            <Button
+                android:id="@+id/buttonStartMotor2"
+                android:layout_width="wrap_content"
+                android:layout_height="58dp"
+                android:layout_below="@+id/buttonStartMotor1"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="17dp"
+                android:layout_marginTop="34dp"
+                android:text="START MOTOR#2" />
+
+            <Button
+                android:id="@+id/buttonKillMotor2"
+                android:layout_width="211dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/buttonKillMotor1"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="39dp"
+                android:layout_toEndOf="@+id/buttonStartMotor2"
+                android:text="KILL MOTOR#2" />
+
+            <Button
+                android:id="@+id/buttonStartMotors"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/buttonStartMotor2"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="13dp"
+                android:layout_marginTop="54dp"
+                android:text="START MOTORS" />
+
+            <Button
+                android:id="@+id/buttonKillMotors"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/buttonKillMotor2"
+                android:layout_marginStart="25dp"
+                android:layout_marginTop="60dp"
+                android:layout_toEndOf="@+id/buttonStartMotors"
+                android:text="KILL MOTORS" />
+
+            <Button
+                android:id="@+id/buttonPrePump1"
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/buttonStartMotors"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="13dp"
+                android:layout_marginTop="97dp"
+                android:text="Prepump liquid #1" />
+
+            <Button
+                android:id="@+id/buttonPrePump2"
+                android:layout_width="179dp"
+                android:layout_height="58dp"
+                android:layout_below="@+id/buttonKillMotors"
+                android:layout_marginStart="18dp"
+                android:layout_marginTop="94dp"
+                android:layout_toEndOf="@+id/buttonPrePump1"
+                android:text="PREPUMP LIQUID #2" />
         </RelativeLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp">
-
-            <Button
-                android:id="@+id/button5"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Button" />
-
-            <Button
-                android:id="@+id/button4"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Button" />
-        </LinearLayout>
 
     </LinearLayout>
 </FrameLayout>

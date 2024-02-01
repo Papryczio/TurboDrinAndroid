@@ -14,12 +14,14 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.nalewak.ui.main.Control;
+import com.example.nalewak.ui.main.ManualControl;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.UUID;
+import java.util.concurrent.ForkJoinPool;
 
 public class ServiceBT extends Service {
     //log.d tag
@@ -181,6 +183,7 @@ public class ServiceBT extends Service {
                         String line = new String(buffer);
                         line = line.replace("\0", "");
                         Control.requestCallback = line;
+                        ManualControl.requestCallback = line;
                         Log.d(TAG, line);
                     }
 
@@ -189,6 +192,15 @@ public class ServiceBT extends Service {
                         try {
                             outputStream.write(request.getBytes());
                             Control.requests.remove(request);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
+
+                    ManualControl.requests.forEach(request -> {
+                        try {
+                            outputStream.write(request.getBytes());
+                            ManualControl.requests.remove(request);
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }

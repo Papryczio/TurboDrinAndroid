@@ -5,12 +5,15 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
 import android.util.Log;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -65,6 +68,8 @@ public class Control extends Fragment {
         TEXTVIEW_LIQUID2 = rootView.findViewById(R.id.textView_liquid2);
         PROGRESSBAR_LIQUID1 = rootView.findViewById(R.id.progressBar1);
         PROGRESSBAR_LIQUID2 = rootView.findViewById(R.id.progressBar2);
+        EditText TEXTNUMBER_LIQUID1 = rootView.findViewById(R.id.editTextNumber1);
+        EditText TEXTNUMBER_LIQUID2 = rootView.findViewById(R.id.editTextNumber2);
 
         // Listeners
         BUTTON_START.setOnClickListener(view -> {
@@ -121,18 +126,18 @@ public class Control extends Fragment {
             }
             requestCallback = "";
         });
-
         BUTTON_ABORT.setOnClickListener(view -> {
             JsonObject jsonRequest = new JsonObject();
             jsonRequest.addProperty("Action", "ABORT_AUTO_PROGRAM");
             requests.add(jsonRequest.toString());
             Log.d("Control_fragment", jsonRequest.toString());
         });
-
         SEEKBAR_LIQUID1.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 TEXTVIEW_LIQUID1.setText(String.format("Liquid#1: %dml", i));
+                TEXTNUMBER_LIQUID1.setText(String.valueOf(i));
+                TEXTNUMBER_LIQUID1.setSelection(TEXTNUMBER_LIQUID1.getText().length());
             }
 
             @Override
@@ -145,11 +150,12 @@ public class Control extends Fragment {
 
             }
         });
-
         SEEKBAR_LIQUID2.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                TEXTVIEW_LIQUID2.setText(String.format("Liquid#1: %dml", i));
+                TEXTVIEW_LIQUID2.setText(String.format("Liquid#2: %dml", i));
+                TEXTNUMBER_LIQUID2.setText(String.valueOf(i));
+                TEXTNUMBER_LIQUID2.setSelection(TEXTNUMBER_LIQUID2.getText().length());
             }
 
             @Override
@@ -161,6 +167,52 @@ public class Control extends Fragment {
             public void onStopTrackingTouch(SeekBar seekBar) {
 
             }
+        });
+        TEXTNUMBER_LIQUID1.addTextChangedListener(new TextWatcher() {
+            public void afterTextChanged(Editable s) {
+                if (!s.toString().equals("")) {
+                    int value = Integer.parseInt(s.toString());
+                    if (value > 200) {
+                        value = 200;
+                        TEXTNUMBER_LIQUID1.setText(String.valueOf(value));
+                    } else if (value < 0) {
+                        value = 0;
+                        TEXTNUMBER_LIQUID1.setText(String.valueOf(value));
+                    }
+                    TEXTVIEW_LIQUID1.setText(String.format("Liquid#1: %dml", value));
+                    SEEKBAR_LIQUID1.setProgress(value);
+                } else {
+                    TEXTVIEW_LIQUID1.setText("Liquid#1: 0ml");
+                    SEEKBAR_LIQUID1.setProgress(0);
+                }
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+        });
+        TEXTNUMBER_LIQUID2.addTextChangedListener(new TextWatcher() {
+            public void afterTextChanged(Editable s) {
+                if (!s.toString().equals("")) {
+                    int value = Integer.parseInt(s.toString());
+                    if (value > 200) {
+                        value = 200;
+                        TEXTNUMBER_LIQUID2.setText(String.valueOf(value));
+                    } else if (value < 0) {
+                        value = 0;
+                        TEXTNUMBER_LIQUID2.setText(String.valueOf(value));
+                    }
+                    TEXTVIEW_LIQUID2.setText(String.format("Liquid#2: %dml", value));
+                    SEEKBAR_LIQUID2.setProgress(value);
+                } else {
+                    TEXTVIEW_LIQUID2.setText("Liquid#2: 0ml");
+                    SEEKBAR_LIQUID2.setProgress(0);
+                }
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
         });
 
         return rootView;
